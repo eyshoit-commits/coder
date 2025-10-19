@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "wasm.invoke parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["function"],
+  "properties": {
+    "module_path": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Relative path to a WebAssembly module stored inside the sandbox root."
+    },
+    "module_bytes": {
+      "type": "string",
+      "minLength": 1,
+      "contentEncoding": "base64",
+      "description": "Base64 encoded WebAssembly binary that will be executed in-memory."
+    },
+    "function": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Exported function name to invoke."
+    },
+    "params": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "value"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["i32", "i64", "f32", "f64"],
+            "description": "WebAssembly value type."
+          },
+          "value": {
+            "oneOf": [
+              { "type": "integer" },
+              { "type": "number" }
+            ],
+            "description": "Value encoded according to the declared WebAssembly type."
+          }
+        }
+      },
+      "default": [],
+      "description": "Optional arguments forwarded to the WebAssembly function."
+    },
+    "fuel": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Optional fuel override limiting the number of WebAssembly instructions."
+    },
+    "memory_limit": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Optional linear memory limit in bytes."
+    },
+    "table_elements_limit": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Optional table element limit."
+    }
+  },
+  "allOf": [
+    {
+      "anyOf": [
+        { "required": ["module_path"] },
+        { "required": ["module_bytes"] }
+      ]
+    },
+    {
+      "not": {
+        "required": ["module_path", "module_bytes"]
+      }
+    }
+  ]
+}

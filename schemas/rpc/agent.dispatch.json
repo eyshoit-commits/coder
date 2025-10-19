@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "agent.dispatch parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["agent", "objective"],
+  "$defs": {
+    "contextFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional sandbox-relative path that will be ingested when inline content is omitted."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional human readable label for the context entry."
+        },
+        "encoding": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Preferred encoding for persisted content (utf-8 or base64)."
+        },
+        "max_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum number of bytes that may be ingested from the referenced file or inline payload."
+        },
+        "content_base64": {
+          "type": "string",
+          "minLength": 1,
+          "contentEncoding": "base64",
+          "description": "Optional inline file contents encoded as base64."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "not": {
+              "required": ["content_base64"]
+            }
+          },
+          "then": {
+            "required": ["path"]
+          }
+        }
+      ]
+    }
+  },
+  "properties": {
+    "agent": {
+      "type": "string",
+      "enum": ["code", "test", "design", "debug", "security", "doc"],
+      "description": "Specialist agent that should process the objective."
+    },
+    "objective": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Goal or task description the agent must accomplish."
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Optional free-form notes that provide additional context.",
+          "default": []
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/contextFile"
+          },
+          "description": "Optional file attachments that supplement the agent context.",
+          "default": []
+        }
+      }
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional override for the LLM model identifier used by the agent."
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Arbitrary metadata that will be forwarded to the agent submission record.",
+      "additionalProperties": true
+    },
+    "parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "temperature": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2,
+          "description": "Optional sampling temperature override."
+        },
+        "max_tokens": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Optional response token cap supplied to the LLM."
+        },
+        "top_p": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Optional nucleus sampling probability mass."
+        }
+      }
+    }
+  }
+}

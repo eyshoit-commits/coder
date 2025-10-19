@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "llm.chat parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["model", "messages"],
+  "properties": {
+    "model": {
+      "type": "string",
+      "description": "Identifier of the loaded model to execute the chat completion against."
+    },
+    "messages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "content"],
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": ["system", "user", "assistant", "tool"],
+            "description": "Author of the chat message."
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Plain-text body of the message provided to the model."
+          }
+        }
+      },
+      "description": "Conversation history provided to the model."
+    },
+    "temperature": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 2,
+      "description": "Softmax temperature applied to token sampling."
+    },
+    "top_k": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 200,
+      "description": "Number of highest probability tokens considered for sampling."
+    },
+    "top_p": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Cumulative probability threshold for nucleus sampling."
+    },
+    "repeat_penalty": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 2,
+      "description": "Penalty applied to repeated tokens to reduce looping."
+    },
+    "max_tokens": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4096,
+      "description": "Maximum number of completion tokens returned by the model."
+    }
+  }
+}
