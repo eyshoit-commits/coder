@@ -8,4 +8,5 @@ pub mod micro;
 pub mod run;
 pub mod wasm;
 
-pub use fs::{read_file, write_file, FsError};
+pub use fs::{read_file, write_file, FsError, WORKSPACE_ROOT_ENV};
+pub use run::{execute, ExecutionResult, RunError};

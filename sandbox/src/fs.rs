@@ -12,7 +12,7 @@ use std::path::{Component, Path, PathBuf};
 use thiserror::Error;
 
 /// Environment variable that controls the sandbox root.
-const WORKSPACE_ROOT_ENV: &str = "CYBERDEV_WORKSPACE_ROOT";
+pub const WORKSPACE_ROOT_ENV: &str = "CYBERDEV_WORKSPACE_ROOT";
 
 /// Default directory (relative to the current working directory) that will be
 /// used when `CYBERDEV_WORKSPACE_ROOT` is not provided.
@@ -96,7 +96,7 @@ fn resolve_workspace_path(path: &Path) -> Result<PathBuf, FsError> {
     Ok(root.join(sanitized))
 }
 
-fn workspace_root() -> Result<PathBuf, FsError> {
+pub(crate) fn workspace_root() -> Result<PathBuf, FsError> {
     let env_root = std::env::var(WORKSPACE_ROOT_ENV).ok().map(PathBuf::from);
 
     let mut root = env_root.unwrap_or_else(|| PathBuf::from(DEFAULT_WORKSPACE_DIR));
