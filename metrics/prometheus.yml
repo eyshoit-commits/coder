@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: otel-collector
+    static_configs:
+      - targets: ['otel-collector:9464']
+  - job_name: api-gateway
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['api:6813']
+  - job_name: llm-server
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['llmserver:6988']

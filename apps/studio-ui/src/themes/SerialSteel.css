@@ -1,0 +1,33 @@
+:root.theme-steel {
+  --bg-primary: #f1f5f9;
+  --bg-secondary: #e2e8f0;
+  --panel: rgba(226, 232, 240, 0.96);
+  --border-strong: rgba(100, 116, 139, 0.65);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --accent-1: #2563eb;
+  --accent-2: #1f2937;
+  --accent-3: #0f172a;
+}
+
+.theme-steel .panel {
+  background: var(--panel);
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  box-shadow: 0 15px 35px rgba(15, 23, 42, 0.12);
+}
+
+.theme-steel .accent {
+  color: var(--accent-1);
+}
+
+.theme-steel .btn-primary {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #f8fafc;
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.35);
+}
+
+.theme-steel .btn-secondary {
+  border: 1px solid rgba(148, 163, 184, 0.65);
+  background: rgba(255, 255, 255, 0.9);
+  color: #1f2937;
+}

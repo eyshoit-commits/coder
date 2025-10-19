@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "fs.write parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["path", "data"],
+  "properties": {
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Filesystem path relative to the sandbox root that will be overwritten."
+    },
+    "data": {
+      "type": "string",
+      "minLength": 1,
+      "contentEncoding": "base64",
+      "description": "Binary payload encoded as base64 that will be written to the requested path."
+    }
+  }
+}

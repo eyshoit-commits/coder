@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "llm.embed parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["model", "input"],
+  "properties": {
+    "model": {
+      "type": "string",
+      "description": "Identifier of the loaded embedding model."
+    },
+    "input": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "description": "Single text fragment to embed."
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Batch of text fragments to embed in a single request."
+        }
+      ]
+    }
+  }
+}

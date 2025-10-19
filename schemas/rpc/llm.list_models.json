@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "llm.list_models parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "description": "No parameters are required to list managed language models."
+}

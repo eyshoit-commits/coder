@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "micro.start parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["image"],
+  "properties": {
+    "image": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identifier of an available micro VM image such as python or node." 
+    },
+    "init_script": {
+      "type": "string",
+      "description": "Optional initialization script executed immediately after the VM is created."
+    }
+  }
+}

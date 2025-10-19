@@ -1,0 +1,33 @@
+:root.theme-neon {
+  --bg-primary: #05070f;
+  --bg-secondary: #0f172a;
+  --panel: rgba(15, 23, 42, 0.85);
+  --border-strong: rgba(14, 165, 233, 0.6);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --accent-1: #0ff0fc;
+  --accent-2: #f500ff;
+  --accent-3: #00ff85;
+}
+
+.theme-neon .panel {
+  background: var(--panel);
+  border: 1px solid rgba(79, 70, 229, 0.35);
+  box-shadow: 0 20px 45px rgba(56, 189, 248, 0.18);
+}
+
+.theme-neon .accent {
+  color: var(--accent-1);
+}
+
+.theme-neon .btn-primary {
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  color: #020617;
+  box-shadow: 0 0 18px rgba(245, 0, 255, 0.35);
+}
+
+.theme-neon .btn-secondary {
+  border: 1px solid rgba(14, 165, 233, 0.45);
+  background: rgba(15, 23, 42, 0.72);
+  color: var(--accent-1);
+}

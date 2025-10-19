@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "project.list parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "description": "project.list does not accept parameters; supply an empty object."
+}

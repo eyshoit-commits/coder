@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "wasm.describe parameters",
+  "type": "object",
+  "description": "wasm.describe does not accept parameters.",
+  "additionalProperties": false
+}

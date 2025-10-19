@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  @apply min-h-screen bg-slate-950 text-slate-100 font-sans;
+}
+
+.panel {
+  @apply rounded-xl border border-slate-800/50 bg-[color:var(--panel)] backdrop-blur-md;
+}
+
+.btn-primary {
+  @apply bg-[color:var(--accent-1)] text-slate-950 font-semibold uppercase tracking-wide transition px-4 py-2 rounded-md shadow-glow;
+}
+
+.btn-secondary {
+  @apply border border-[color:var(--accent-1)]/40 text-[color:var(--accent-1)] uppercase tracking-wide transition px-4 py-2 rounded-md;
+}
+
+.theme-neon {
+  --bg-primary: #05070f;
+  --bg-secondary: #0f172a;
+  --panel: rgba(15, 23, 42, 0.85);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --accent-1: #0ff0fc;
+  --accent-2: #f500ff;
+  --accent-3: #00ff85;
+}
+
+.theme-steel {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #e2e8f0;
+  --panel: rgba(226, 232, 240, 0.92);
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --accent-1: #486581;
+  --accent-2: #1f2937;
+  --accent-3: #0f172a;
+}
+
+body.theme-neon {
+  background: radial-gradient(circle at 15% 20%, rgba(15, 240, 252, 0.15), transparent),
+    radial-gradient(circle at 85% 30%, rgba(245, 0, 255, 0.15), transparent),
+    var(--bg-primary);
+}
+
+body.theme-steel {
+  background: linear-gradient(135deg, rgba(226, 232, 240, 0.85), rgba(148, 163, 184, 0.75));
+}
