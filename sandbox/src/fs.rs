@@ -90,7 +90,7 @@ pub fn read_file<P: AsRef<Path>>(path: P) -> Result<String, FsError> {
     Ok(std::fs::read_to_string(target)?)
 }
 
-fn resolve_workspace_path(path: &Path) -> Result<PathBuf, FsError> {
+pub(crate) fn resolve_workspace_path(path: &Path) -> Result<PathBuf, FsError> {
     let sanitized = sanitize_relative_path(path)?;
     let root = workspace_root()?;
     Ok(root.join(sanitized))

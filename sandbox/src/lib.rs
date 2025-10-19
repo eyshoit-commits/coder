@@ -9,4 +9,7 @@ pub mod run;
 pub mod wasm;
 
 pub use fs::{read_file, write_file, FsError, WORKSPACE_ROOT_ENV};
-pub use run::{execute, ExecutionResult, RunError};
+pub use run::{
+    execute, execute_with_config, ExecuteConfig, ExecutionResult, RunError,
+    DEFAULT_EXECUTION_TIMEOUT,
+};

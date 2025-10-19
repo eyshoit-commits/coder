@@ -42,3 +42,35 @@ Jede Methode erhält eine JSON-Schema Definition in `schemas/rpc` und wird über
 2. Implementierung der Auth-Middleware mit JWT + API-Key Prüfung.
 3. Aufbau des Telemetrie-Pipelines (OTEL + Prometheus).
 4. Dokumentation der Fehlercodes und Ratenlimits.
+
+## Implementierte JSON-RPC Methoden
+
+### `fs.write`
+- **Route:** `POST /rpc`
+- **Beschreibung:** Schreibt Dateien relativ zum Workspace (UTF-8 oder Base64 Inhalt).
+- **Antwort:** `{ "result": { "path": "<string>", "bytes": <number> } }`
+- **Fehlercodes:**
+  - `-32602` – Ungültige Parameter (z.B. absolute Pfade, Traversal, zu große Dateien).
+  - `-32000` – Interner Dateisystemfehler.
+
+### `run.exec`
+- **Route:** `POST /rpc`
+- **Beschreibung:** Führt zugelassene Kommandos innerhalb des Sandbox-Workspaces aus.
+- **Antwort:**
+  ```json
+  {
+    "result": {
+      "status": { "success": true, "code": 0 },
+      "stdout": "…",
+      "stderr": "…",
+      "duration_ms": 42
+    }
+  }
+  ```
+- **Fehlercodes:**
+  - `-32010` – Kommando nicht erlaubt.
+  - `-32011` – Timeout überschritten.
+  - `-32012` – Ausgabebegrenzung überschritten.
+  - `-32000` – Interner Ausführungsfehler (I/O, fehlende Streams, etc.).
+
+Weitere Methoden folgen in späteren Iterationen.

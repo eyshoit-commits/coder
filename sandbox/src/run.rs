@@ -7,16 +7,17 @@
 use std::fmt;
 use std::fs;
 use std::io::{self, Read};
+use std::path::PathBuf;
 use std::process::{Child, Command, ExitStatus, Stdio};
 use std::thread;
 use std::time::{Duration, Instant};
 
 use thiserror::Error;
 
-use crate::fs::{workspace_root, FsError};
+use crate::fs::{resolve_workspace_path, workspace_root, FsError};
 
-/// Maximum amount of time a command is permitted to run.
-const EXECUTION_TIMEOUT: Duration = Duration::from_secs(5);
+/// Default amount of time a command is permitted to run.
+pub const DEFAULT_EXECUTION_TIMEOUT: Duration = Duration::from_secs(5);
 
 /// Maximum number of bytes captured from stdout/stderr.
 const MAX_OUTPUT_BYTES: usize = 512 * 1024; // 512 KiB
@@ -86,6 +87,15 @@ pub enum RunError {
     Io(#[from] io::Error),
 }
 
+/// Configuration options for sandboxed command execution.
+#[derive(Debug, Default, Clone)]
+pub struct ExecuteConfig {
+    /// Optional override for the default execution timeout.
+    pub timeout: Option<Duration>,
+    /// Optional working directory relative to the workspace root.
+    pub working_directory: Option<PathBuf>,
+}
+
 /// Result of a sandboxed process execution.
 #[derive(Debug)]
 pub struct ExecutionResult {
@@ -95,10 +105,21 @@ pub struct ExecutionResult {
     pub stdout: String,
     /// Captured stderr (truncated to [`MAX_OUTPUT_BYTES`]).
     pub stderr: String,
+    /// Total duration the command was allowed to run.
+    pub duration: Duration,
 }
 
-/// Executes a command inside the sandbox and captures its output.
+/// Executes a command inside the sandbox and captures its output with default settings.
 pub fn execute(command: &str, args: &[String]) -> Result<ExecutionResult, RunError> {
+    execute_with_config(command, args, ExecuteConfig::default())
+}
+
+/// Executes a command inside the sandbox with the provided configuration.
+pub fn execute_with_config(
+    command: &str,
+    args: &[String],
+    mut config: ExecuteConfig,
+) -> Result<ExecutionResult, RunError> {
     if !is_command_allowed(command) {
         return Err(RunError::CommandNotAllowed(command.to_string()));
     }
@@ -107,9 +128,17 @@ pub fn execute(command: &str, args: &[String]) -> Result<ExecutionResult, RunErr
     let home_dir = workspace.join(".sandbox_home");
     fs::create_dir_all(&home_dir)?;
 
+    let timeout = config.timeout.unwrap_or(DEFAULT_EXECUTION_TIMEOUT);
+
+    let working_directory = if let Some(dir) = config.working_directory.take() {
+        resolve_workspace_path(&dir)?
+    } else {
+        workspace.clone()
+    };
+
     let mut cmd = Command::new(command);
     cmd.args(args)
-        .current_dir(&workspace)
+        .current_dir(&working_directory)
         .stdin(Stdio::null())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped());
@@ -131,15 +160,16 @@ pub fn execute(command: &str, args: &[String]) -> Result<ExecutionResult, RunErr
     let stdout_handle = spawn_reader(stdout, OutputStream::Stdout);
     let stderr_handle = spawn_reader(stderr, OutputStream::Stderr);
 
-    let status = match wait_with_timeout(&mut child) {
+    let start = Instant::now();
+    let status = match wait_with_timeout(&mut child, timeout) {
         Ok(status) => status,
         Err(err) => {
-            // ensure reader threads finish before returning the timeout.
             let _ = join_reader(stdout_handle);
             let _ = join_reader(stderr_handle);
             return Err(err);
         }
     };
+    let duration = start.elapsed();
 
     let stdout_bytes = join_reader(stdout_handle)?;
     let stderr_bytes = join_reader(stderr_handle)?;
@@ -148,6 +178,7 @@ pub fn execute(command: &str, args: &[String]) -> Result<ExecutionResult, RunErr
         status,
         stdout: String::from_utf8_lossy(&stdout_bytes).to_string(),
         stderr: String::from_utf8_lossy(&stderr_bytes).to_string(),
+        duration,
     })
 }
 
@@ -188,7 +219,7 @@ fn join_reader(handle: thread::JoinHandle<Result<Vec<u8>, RunError>>) -> Result<
     }
 }
 
-fn wait_with_timeout(child: &mut Child) -> Result<ExitStatus, RunError> {
+fn wait_with_timeout(child: &mut Child, timeout: Duration) -> Result<ExitStatus, RunError> {
     let start = Instant::now();
 
     loop {
@@ -196,10 +227,10 @@ fn wait_with_timeout(child: &mut Child) -> Result<ExitStatus, RunError> {
             return Ok(status);
         }
 
-        if start.elapsed() >= EXECUTION_TIMEOUT {
+        if start.elapsed() >= timeout {
             child.kill().ok();
             let _ = child.wait();
-            return Err(RunError::Timeout(EXECUTION_TIMEOUT));
+            return Err(RunError::Timeout(timeout));
         }
 
         thread::sleep(Duration::from_millis(25));
@@ -214,7 +245,10 @@ fn is_command_allowed(command: &str) -> bool {
 mod tests {
     use super::*;
 
-    use crate::fs::WORKSPACE_ROOT_ENV;
+    use std::path::PathBuf;
+    use std::time::Duration;
+
+    use crate::fs::{workspace_root, WORKSPACE_ROOT_ENV};
 
     fn with_temp_workspace<F: FnOnce()>(test: F) {
         let temp_dir = tempfile::tempdir().expect("create temp dir");
@@ -232,6 +266,7 @@ mod tests {
             assert!(result.status.success());
             assert_eq!(result.stdout, "cyberdev");
             assert_eq!(result.stderr, "");
+            assert!(result.duration <= DEFAULT_EXECUTION_TIMEOUT);
         });
     }
 
@@ -246,9 +281,46 @@ mod tests {
     #[test]
     fn terminates_on_timeout() {
         with_temp_workspace(|| {
-            let err = execute("sh", &["-c".to_string(), "sleep 10".to_string()])
-                .expect_err("execution should time out");
-            assert!(matches!(err, RunError::Timeout(_)));
+            let mut config = ExecuteConfig::default();
+            config.timeout = Some(Duration::from_millis(200));
+
+            let err =
+                execute_with_config("sh", &["-c".to_string(), "sleep 10".to_string()], config)
+                    .expect_err("execution should time out");
+            assert!(matches!(err, RunError::Timeout(t) if t == Duration::from_millis(200)));
+        });
+    }
+
+    #[test]
+    fn honors_custom_working_directory() {
+        with_temp_workspace(|| {
+            let root = workspace_root().expect("workspace root");
+            let nested = root.join("nested");
+            fs::create_dir_all(&nested).expect("create nested dir");
+
+            let mut config = ExecuteConfig::default();
+            config.working_directory = Some(PathBuf::from("nested"));
+
+            let result = execute_with_config("sh", &["-c".to_string(), "pwd".to_string()], config)
+                .expect("execution succeeds");
+
+            assert!(result.status.success());
+            assert!(result.stdout.trim_end().ends_with("/nested"));
+        });
+    }
+
+    #[test]
+    fn rejects_working_directory_escape() {
+        with_temp_workspace(|| {
+            let mut config = ExecuteConfig::default();
+            config.working_directory = Some(PathBuf::from("../escape"));
+
+            let err = execute_with_config("sh", &[], config)
+                .expect_err("should fail resolving working directory");
+            assert!(matches!(
+                err,
+                RunError::Workspace(FsError::TraversalAttempt)
+            ));
         });
     }
 }
