@@ -1,0 +1,17 @@
+FROM node:20-slim AS base
+WORKDIR /srv
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends python3 build-essential git ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY apps/llmserver/package.json apps/llmserver/package-lock.json* ./
+RUN npm install --omit=dev
+
+COPY apps/llmserver ./
+RUN npm run build
+
+ENV NODE_ENV=production
+ENV LLM_PORT=6988
+EXPOSE 6988
+CMD ["node", "dist/server.js"]

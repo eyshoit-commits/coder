@@ -1,0 +1,31 @@
+FROM rust:1.76-slim AS builder
+WORKDIR /app
+
+COPY Cargo.toml ./
+COPY sandbox/Cargo.toml sandbox/Cargo.toml
+COPY apps/api/Cargo.toml apps/api/Cargo.toml
+COPY apps/auth/Cargo.toml apps/auth/Cargo.toml
+
+RUN mkdir -p sandbox/src apps/api/src apps/auth/src
+RUN echo "fn main() {}" > apps/api/src/main.rs
+RUN echo "fn main() {}" > apps/auth/src/main.rs
+RUN echo "fn main() {}" > sandbox/src/lib.rs
+RUN cargo fetch
+
+RUN rm -rf sandbox/src apps/api/src apps/auth/src
+
+COPY . .
+RUN cargo build --release -p api
+
+FROM debian:bookworm-slim
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /srv
+COPY --from=builder /app/target/release/api /usr/local/bin/cyberdevstudio-api
+COPY --from=builder /app/database/migrations /srv/migrations
+ENV RUST_LOG=info
+ENV DATABASE_URL=postgres://admin:supersecure@db:5432/cyberstudio
+ENV API_JWT_SECRET=change-me
+CMD ["cyberdevstudio-api"]

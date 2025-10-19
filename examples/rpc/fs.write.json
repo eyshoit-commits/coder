@@ -1,0 +1,9 @@
+{
+  "jsonrpc": "2.0",
+  "id": "fs-write-1",
+  "method": "fs.write",
+  "params": {
+    "path": "src/main.rs",
+    "data": "Zm4gbWFpbigpIHsgcHJpbnRsbigiQ3liZXJEZXZTdHVkaW8iKTsgfQo="
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "jsonrpc": "2.0",
+  "id": "run-exec-1",
+  "method": "run.exec",
+  "params": {
+    "program": "/bin/sh",
+    "args": ["-c", "echo ready"],
+    "timeout_ms": 5000
+  }
+}

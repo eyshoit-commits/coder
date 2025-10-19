@@ -1,0 +1,9 @@
+{
+  "jsonrpc": "2.0",
+  "id": "project-create-1",
+  "method": "project.create",
+  "params": {
+    "name": "vision-alpha",
+    "description": "LLM-assisted IDE playground for the robotics squad"
+  }
+}

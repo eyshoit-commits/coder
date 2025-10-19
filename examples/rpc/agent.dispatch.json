@@ -1,0 +1,25 @@
+{
+  "jsonrpc": "2.0",
+  "id": "agent-dispatch-1",
+  "method": "agent.dispatch",
+  "params": {
+    "agent": "code",
+    "objective": "Refactor the project service to support soft deletes.",
+    "context": {
+      "notes": [
+        "Project files live under project/:*",
+        "Use transaction boundaries in PostgreSQL"
+      ],
+      "files": [
+        {
+          "path": "project/src/service.rs",
+          "max_bytes": 32768
+        }
+      ]
+    },
+    "parameters": {
+      "temperature": 0.3,
+      "max_tokens": 512
+    }
+  }
+}

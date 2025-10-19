@@ -1,0 +1,105 @@
+version: "3.9"
+services:
+  db:
+    image: postgresml/postgresml:2.7.0
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: supersecure
+      POSTGRES_DB: cyberstudio
+    ports:
+      - "6472:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  auth:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.auth
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://admin:supersecure@db:5432/cyberstudio
+      AUTH_JWT_SECRET: change-me
+      AUTH_JWT_EXP_MINUTES: "1440"
+      AUTH_BIND_ADDR: 0.0.0.0:6971
+    ports:
+      - "6971:6971"
+
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.api
+    depends_on:
+      - db
+      - auth
+      - llmserver
+    environment:
+      DATABASE_URL: postgres://admin:supersecure@db:5432/cyberstudio
+      API_JWT_SECRET: change-me
+      LLM_ENDPOINT: http://llmserver:6988
+      SANDBOX_ROOT: /srv/workspace
+      API_BIND_ADDR: 0.0.0.0:6813
+    ports:
+      - "6813:6813"
+    volumes:
+      - workspace:/srv/workspace
+
+  llmserver:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.llm
+    environment:
+      DATABASE_URL: postgres://admin:supersecure@db:5432/cyberstudio
+      LLM_PORT: "6988"
+      LLM_HOST: 0.0.0.0
+      LLM_MODELS_DIR: /models
+      LLM_DOWNLOAD_DIR: /models/downloads
+      LLM_ADMIN_JWT_SECRET: change-me
+    ports:
+      - "6988:6988"
+    volumes:
+      - models:/models
+      - logs:/logs
+
+  studio-ui:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.ui
+    depends_on:
+      - api
+    ports:
+      - "6711:6711"
+
+  otel-collector:
+    image: otel/opentelemetry-collector:0.96.0
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ../metrics/otel-config.yaml:/etc/otel-collector-config.yaml:ro
+    ports:
+      - "4317:4317"
+
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    ports:
+      - "9090:9090"
+    volumes:
+      - ../metrics/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+
+  grafana:
+    image: grafana/grafana:10.4.3
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+
+volumes:
+  pgdata:
+  models:
+  logs:
+  workspace:

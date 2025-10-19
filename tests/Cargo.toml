@@ -1,0 +1,23 @@
+[package]
+name = "integration-tests"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = { workspace = true }
+sandbox = { path = "../sandbox" }
+tokio = { workspace = true }
+tempfile = { workspace = true }
+wat = { workspace = true }
+
+[[test]]
+name = "fs_write"
+path = "fs_write.rs"
+
+[[test]]
+name = "run_exec"
+path = "run_exec.rs"
+
+[[test]]
+name = "e2e"
+path = "e2e.rs"

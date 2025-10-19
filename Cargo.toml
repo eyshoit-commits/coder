@@ -2,7 +2,8 @@
 members = [
     "apps/api",
     "apps/auth",
-    "sandbox"
+    "sandbox",
+    "tests"
 ]
 resolver = "2"
 
@@ -40,3 +41,5 @@ tracing-opentelemetry = "0.22"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 uuid = { version = "1.7", features = ["v4", "serde"] }
 validator = "0.16"
+tempfile = "3.10"
+wat = "1.0"
