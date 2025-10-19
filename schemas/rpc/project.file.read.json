@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "project.file.read parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["project_id", "path"],
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Project identifier used to scope the lookup."
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^(?!/)(?!.*\\.\\.)(?!.*//).+",
+      "description": "Relative file path whose contents should be returned."
+    }
+  }
+}

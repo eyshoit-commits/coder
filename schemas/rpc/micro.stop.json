@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "micro.stop parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["vm_id"],
+  "properties": {
+    "vm_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Identifier of the VM instance that should be terminated."
+    }
+  }
+}

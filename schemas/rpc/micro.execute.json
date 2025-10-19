@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "micro.execute parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["vm_id", "code"],
+  "properties": {
+    "vm_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Identifier of the running micro VM instance." 
+    },
+    "code": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Source code snippet executed inside the isolated VM."
+    },
+    "timeout_ms": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Optional execution timeout override in milliseconds." 
+    }
+  }
+}

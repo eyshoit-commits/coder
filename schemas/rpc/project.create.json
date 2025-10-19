@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "project.create parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Human readable project name that must be unique per owner."
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 512,
+      "description": "Optional project summary rendered in dashboards."
+    }
+  }
+}

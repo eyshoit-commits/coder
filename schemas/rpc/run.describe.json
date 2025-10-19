@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "run.describe parameters",
+  "type": "object",
+  "description": "run.describe does not accept any parameters.",
+  "additionalProperties": false
+}

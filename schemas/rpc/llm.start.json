@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "llm.start parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["model"],
+  "properties": {
+    "model": {
+      "type": "string",
+      "description": "Identifier of the downloaded model to load into memory."
+    },
+    "temperature": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 2,
+      "description": "Default temperature applied to subsequent chat requests."
+    },
+    "top_k": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 200,
+      "description": "Upper bound on candidate tokens examined during sampling."
+    },
+    "top_p": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Cumulative probability cutoff for nucleus sampling."
+    },
+    "repeat_penalty": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 2,
+      "description": "Penalty applied to repeated tokens when generating completions."
+    },
+    "max_tokens": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4096,
+      "description": "Upper bound for completion tokens generated per request."
+    }
+  }
+}

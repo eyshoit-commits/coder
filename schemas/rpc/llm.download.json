@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "llm.download parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["model"],
+  "properties": {
+    "model": {
+      "type": "string",
+      "description": "Identifier of the supported GGUF model that should be downloaded to the service."
+    }
+  }
+}

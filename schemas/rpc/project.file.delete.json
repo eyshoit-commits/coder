@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "project.file.delete parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["project_id", "path"],
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Project identifier that owns the file."
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^(?!/)(?!.*\\.\\.)(?!.*//).+",
+      "description": "Relative file path that should be removed."
+    }
+  }
+}

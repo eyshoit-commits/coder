@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "run.exec parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["program"],
+  "properties": {
+    "program": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Whitelisted executable name or relative path inside the sandbox." 
+    },
+    "args": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Optional command line arguments forwarded to the executable.",
+      "default": []
+    },
+    "env": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "value"],
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Environment variable name." 
+          },
+          "value": {
+            "type": "string",
+            "description": "Environment variable value." 
+          }
+        }
+      },
+      "description": "Environment variable overrides appended to the process environment.",
+      "default": []
+    },
+    "stdin": {
+      "type": "string",
+      "minLength": 1,
+      "contentEncoding": "base64",
+      "description": "Optional standard input payload encoded in base64."
+    },
+    "cwd": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional working directory relative to the sandbox root."
+    },
+    "timeout_ms": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Optional execution timeout override in milliseconds." 
+    }
+  }
+}

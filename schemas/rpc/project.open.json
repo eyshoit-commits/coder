@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "project.open parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["project_id"],
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Project identifier returned by project.create or project.list."
+    },
+    "include_content": {
+      "type": "boolean",
+      "description": "When true, file contents are returned as base64 strings.",
+      "default": false
+    }
+  }
+}
