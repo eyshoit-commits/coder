@@ -1,0 +1,14 @@
+{
+  "jsonrpc": "2.0",
+  "id": "example-llm-chat",
+  "method": "llm.chat",
+  "params": {
+    "model": "deepseek-coder-1.3b",
+    "messages": [
+      { "role": "system", "content": "You are CyberDevStudio." },
+      { "role": "user", "content": "Say hello." }
+    ],
+    "temperature": 0.2,
+    "stream": true
+  }
+}

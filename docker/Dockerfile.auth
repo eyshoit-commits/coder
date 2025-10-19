@@ -1,0 +1,10 @@
+FROM rust:1.76-slim AS builder
+WORKDIR /app
+COPY ../.. .
+# TODO: compile auth service once crate is available
+
+FROM debian:bookworm-slim
+WORKDIR /app
+COPY --from=builder /app/target/release/auth /usr/local/bin/auth
+EXPOSE 6971
+CMD ["/usr/local/bin/auth"]

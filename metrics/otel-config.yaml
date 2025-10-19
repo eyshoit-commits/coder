@@ -1,0 +1,28 @@
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:55681
+      grpc:
+        endpoint: 0.0.0.0:55680
+
+exporters:
+  prometheus:
+    endpoint: 0.0.0.0:9464
+  logging:
+    loglevel: info
+
+processors:
+  batch:
+    timeout: 5s
+
+service:
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus]
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging]

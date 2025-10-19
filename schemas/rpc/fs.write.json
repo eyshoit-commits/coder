@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "fs.write",
+  "type": "object",
+  "properties": {
+    "method": { "const": "fs.write" },
+    "params": {
+      "type": "object",
+      "required": ["path", "contents"],
+      "properties": {
+        "path": { "type": "string" },
+        "contents": { "type": "string" },
+        "encoding": { "type": "string", "enum": ["utf8", "base64"] }
+      }
+    }
+  },
+  "required": ["method", "params"]
+}

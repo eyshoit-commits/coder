@@ -1,0 +1,10 @@
+{
+  "jsonrpc": "2.0",
+  "id": "example-fs-write",
+  "method": "fs.write",
+  "params": {
+    "path": "README.md",
+    "contents": "Hello CyberDevStudio",
+    "encoding": "utf8"
+  }
+}

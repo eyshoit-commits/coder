@@ -1,0 +1,10 @@
+{
+  "jsonrpc": "2.0",
+  "id": "example-run-exec",
+  "method": "run.exec",
+  "params": {
+    "command": "echo",
+    "args": ["hello", "cyber"],
+    "timeout_ms": 2000
+  }
+}

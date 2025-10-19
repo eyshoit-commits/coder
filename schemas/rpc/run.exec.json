@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "run.exec",
+  "type": "object",
+  "properties": {
+    "method": { "const": "run.exec" },
+    "params": {
+      "type": "object",
+      "required": ["command"],
+      "properties": {
+        "command": { "type": "string" },
+        "args": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "timeout_ms": { "type": "integer", "minimum": 1, "maximum": 120000 },
+        "working_directory": { "type": "string" }
+      }
+    }
+  },
+  "required": ["method", "params"]
+}

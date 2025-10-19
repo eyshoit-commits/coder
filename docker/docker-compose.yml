@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  api:
+    build: ./docker/Dockerfile.api
+    ports:
+      - "6813:6813"
+    environment:
+      - RPC_PORT=6813
+    depends_on:
+      - db
+      - llmserver
+
+  llmserver:
+    build: ./docker/Dockerfile.llm
+    ports:
+      - "6988:6988"
+    environment:
+      - LLM_PORT=6988
+    volumes:
+      - ../models:/models
+      - ../logs:/logs
+
+  studio-ui:
+    build: ./docker/Dockerfile.ui
+    ports:
+      - "6711:6711"
+
+  auth:
+    build: ./docker/Dockerfile.auth
+    ports:
+      - "6971:6971"
+
+  db:
+    image: postgresml/postgresml
+    restart: always
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=supersecure
+      - POSTGRES_DB=cyberstudio
+    ports:
+      - "6472:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

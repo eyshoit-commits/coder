@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: cyberdevstudio
+    static_configs:
+      - targets:
+          - api:6813
+          - llmserver:6988
+          - auth:6971
+    metrics_path: /metrics

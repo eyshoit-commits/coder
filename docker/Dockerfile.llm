@@ -1,0 +1,7 @@
+FROM node:20-slim
+WORKDIR /srv/llm
+COPY ../.. .
+RUN npm install --global pnpm && \
+    pnpm install --filter llmserver...
+EXPOSE 6988
+CMD ["pnpm", "--filter", "llmserver", "start"]

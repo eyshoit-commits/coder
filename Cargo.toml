@@ -1,0 +1,10 @@
+[workspace]
+members = [
+    "apps/api",
+    "apps/auth",
+    "sandbox"
+]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"

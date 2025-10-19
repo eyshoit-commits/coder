@@ -1,0 +1,27 @@
+:root {
+  --background: #080818;
+  --foreground: #e0f7ff;
+  --accent: #00f6ff;
+  --accent-secondary: #ff00d4;
+  --panel: rgba(8, 8, 24, 0.92);
+  --border: rgba(0, 246, 255, 0.35);
+}
+
+body {
+  background: radial-gradient(circle at 20% 20%, #101040, #040410 60%);
+  color: var(--foreground);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.cyber-panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  box-shadow: 0 0 20px rgba(0, 246, 255, 0.2);
+}
+
+.button-primary {
+  background: linear-gradient(120deg, var(--accent), var(--accent-secondary));
+  color: #040410;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
